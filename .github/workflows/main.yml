@@ -2,44 +2,158 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm validate
-      - run: pnpm test
-
-  publish:
-    needs: validate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  # Test job runs on all pushes and PRs
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      
       - uses: pnpm/action-setup@v2
         with:
           version: 7
+      
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm publish --no-git-checks
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Run tests
+        run: pnpm test
+
+  # Build job runs after test success
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    # Only run on main branch pushes, not on PRs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Build package
+        run: pnpm run build
+      
+      # Save the build artifacts for the next job
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+
+  # Release job creates GitHub release with changelog
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      created: ${{ steps.release.outputs.created }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: Run standard-version
+        id: release
+        run: |
+          # Run standard-version to bump version and generate changelog
+          pnpm run release
+          
+          # Extract new version number
+          VERSION=$(node -p "require('./package.json').version")
+          echo "::set-output name=version::v${VERSION}"
+          echo "::set-output name=created::true"
+      
+      - name: Push changes
+        run: |
+          git push --follow-tags origin main
+      
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release.outputs.version }}
+          release_name: Release ${{ steps.release.outputs.version }}
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+
+  # Publish job publishes to NPM
+  publish:
+    name: Publish to NPM
+    needs: release
+    if: needs.release.outputs.created == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
+      
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
+      
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -11,5 +11,5 @@ module.exports = {
   releaseCommitMessageFormat: 'chore(release): 🔖 {{currentTag}}',
   tagPrefix: 'v',
   commitUrlFormat: 'https://github.com/shaiknoorullah/serverforge/commit/{{hash}}',
-  compareUrlFormat: 'https://github.com/yourusername/serverforge/compare/{{previousTag}}...{{currentTag}}'
+  compareUrlFormat: 'https://github.com/shaiknoorullah/serverforge/compare/{{previousTag}}...{{currentTag}}'
 };
