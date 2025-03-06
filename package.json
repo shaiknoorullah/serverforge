@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node mocha-runner.js",
+   "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\"}' mocha",
     "prepare": "husky",
     "commit": "git-cz",
     "validate": "pnpm run format:check && pnpm run lint && pnpm run typecheck",
@@ -46,7 +46,6 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-promise": "^7.2.1",
-    "glob": "^11.0.1",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "mocha": "10.2.0",
