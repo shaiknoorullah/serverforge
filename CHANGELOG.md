@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/shaiknoorullah/serverforge/compare/v1.0.1...v1.0.2) (2025-03-06)
+
+
+### 🐛 Bug Fixes
+
+* change deprecated download-artifact action from v3-v4 ([f7d817d](https://github.com/shaiknoorullah/serverforge/commit/f7d817dd56c0618fc8aa8908759c21ab3606bf04))
+
 ### 1.0.1 (2025-03-06)
 
 
