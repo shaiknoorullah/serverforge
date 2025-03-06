@@ -12,8 +12,9 @@
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "."
   },
-  "include": ["src/**/*", "src/**/*.test.ts"],
+  "include": ["src/**/*", "src/**/*.spec.ts"],
   "exclude": ["node_modules", "dist"]
 }

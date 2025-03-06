@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require ts-node/register --require tsconfig-paths/register 'src/**/*.spec.ts'",
+   "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\"}' mocha",
     "prepare": "husky",
     "commit": "git-cz",
     "validate": "pnpm run format:check && pnpm run lint && pnpm run typecheck",
