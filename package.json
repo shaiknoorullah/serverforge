@@ -3,17 +3,47 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "prepare": "husky install",
+    "commit": "git-cz",
+    "validate": "pnpm run format:check && pnpm run lint && pnpm run typecheck",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx}\"",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
+    "typecheck": "tsc --noEmit",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major",
+    "test:watch": "mocha --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.5.2",
   "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
+    "@types/chai": "^5.2.0",
     "@types/figlet": "^1.7.0",
     "@types/inquirer": "^9.0.7",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22.13.9",
+    "@types/sinon": "^17.0.4",
+    "@typescript-eslint/eslint-plugin": "^8.26.0",
+    "@typescript-eslint/parser": "^8.26.0",
+    "chai": "5.0.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "mocha": "10.2.0",
+    "prettier": "^3.5.3",
+    "sinon": "^19.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },
@@ -27,5 +57,10 @@
     "inquirer": "^12.4.2",
     "listr2": "^8.2.5",
     "ora": "^8.2.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
