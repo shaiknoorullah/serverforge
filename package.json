@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-   "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\"}' mocha",
+    "build": "tsc",
+    "test": "TS_NODE_COMPILER_OPTIONS='{\"module\":\"CommonJS\"}' mocha",
     "prepare": "husky",
     "commit": "git-cz",
     "validate": "pnpm run format:check && pnpm run lint && pnpm run typecheck",
