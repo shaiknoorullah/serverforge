@@ -1,1 +1,77 @@
-node_modules
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+lib/
+out/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Editor directories and files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Debug
+.debug/
+*.debug.js
+
+# Temporary files
+tmp/
+temp/
+
+# Cache
+.cache/
+.eslintcache
+.stylelintcache
+.npm
+
+# npm/yarn lock files (if using pnpm)
+package-lock.json
+yarn.lock
+
+# Project specific
+.serverforge-config.json
